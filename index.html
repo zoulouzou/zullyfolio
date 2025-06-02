@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio GMod - Zully</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 50%, #0f0f0f 100%);
+      color: #ffffff;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Animated background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 25% 25%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(255, 105, 180, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(72, 187, 120, 0.05) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+
+    /* Hero Section */
+    .hero {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(120, 119, 198, 0.3) 0%, transparent 70%);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      filter: blur(60px);
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
+      50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.5; }
+    }
+
+    .hero h1 {
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 700;
+      background: linear-gradient(135deg, #fff 0%, #7877c6 50%, #ff69b4 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero .subtitle {
+      font-size: clamp(1.2rem, 3vw, 2rem);
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 300;
+      margin-bottom: 40px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .scroll-indicator {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 14px;
+      cursor: pointer;
+      z-index: 1;
+      transition: color 0.3s ease;
+    }
+
+    .scroll-indicator:hover {
+      color: #7877c6;
+    }
+
+    .scroll-arrow {
+      width: 2px;
+      height: 30px;
+      background: linear-gradient(to bottom, transparent, #7877c6);
+      position: relative;
+      animation: scrollMove 2s ease-in-out infinite;
+    }
+
+    .scroll-arrow::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: -3px;
+      width: 8px;
+      height: 8px;
+      border-right: 2px solid #7877c6;
+      border-bottom: 2px solid #7877c6;
+      transform: rotate(45deg);
+    }
+
+    @keyframes scrollMove {
+      0%, 100% { transform: translateY(0); opacity: 1; }
+      50% { transform: translateY(10px); opacity: 0.5; }
+    }
+
+    /* Addons Section */
+    .addons-section {
+      padding: 100px 0;
+      position: relative;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 600;
+      margin-bottom: 80px;
+      background: linear-gradient(135deg, #fff 0%, #7877c6 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .main-addons {
+      display: flex;
+      flex-direction: column;
+      gap: 120px;
+      padding: 40px 0;
+    }
+
+    .addon {
+      position: relative;
+      max-width: 800px;
+      width: 100%;
+    }
+
+    .addon:nth-child(odd) {
+      margin-left: auto;
+      margin-right: 10%;
+    }
+
+    .addon:nth-child(even) {
+      margin-right: auto;
+      margin-left: 10%;
+    }
+
+    .addon-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      padding: 30px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s ease;
+      cursor: pointer;
+    }
+
+    .addon-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, 
+        rgba(120, 119, 198, 0.1) 0%,
+        rgba(255, 105, 180, 0.1) 50%,
+        rgba(72, 187, 120, 0.1) 100%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+
+    .addon-card:hover::before {
+      opacity: 1;
+    }
+
+    .addon-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .addon-title {
+      font-size: clamp(1.5rem, 4vw, 2.2rem);
+      font-weight: 600;
+      color: #ffffff;
+      margin: 0;
+    }
+
+    .addon-date {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.6);
+      background: rgba(255, 255, 255, 0.1);
+      padding: 8px 16px;
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      white-space: nowrap;
+    }
+
+    .video-container {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+      z-index: 2;
+    }
+
+    .video-wrapper {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      background: #000;
+    }
+
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      transition: transform 0.4s ease;
+    }
+
+    /* Decorative elements */
+    .addon::before {
+      content: '';
+      position: absolute;
+      top: -50px;
+      right: -50px;
+      width: 100px;
+      height: 100px;
+      background: radial-gradient(circle, rgba(120, 119, 198, 0.2) 0%, transparent 70%);
+      border-radius: 50%;
+      filter: blur(30px);
+      opacity: 0.5;
+      z-index: 0;
+    }
+
+    .addon:nth-child(even)::before {
+      left: -50px;
+      right: auto;
+      background: radial-gradient(circle, rgba(255, 105, 180, 0.2) 0%, transparent 70%);
+    }
+
+    /* Separator Section */
+    .separator-section {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 120px 0 40px 0;
+      position: relative;
+    }
+
+    .separator-line {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      flex: 1;
+    }
+
+    .old-projects-toggle {
+      margin: 0 40px;
+    }
+
+    .toggle-btn {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 25px;
+      padding: 25px 35px;
+      color: #ffffff;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      min-width: 320px;
+      font-family: inherit;
+    }
+
+    .toggle-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, 
+        rgba(120, 119, 198, 0.1) 0%,
+        rgba(255, 105, 180, 0.1) 100%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .toggle-btn:hover::before {
+      opacity: 1;
+    }
+
+    .toggle-btn:hover {
+      border-color: rgba(120, 119, 198, 0.4);
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(120, 119, 198, 0.3);
+    }
+
+    .toggle-icon {
+      font-size: 24px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .toggle-text {
+      font-size: 16px;
+      font-weight: 600;
+      position: relative;
+      z-index: 2;
+    }
+
+    .toggle-subtitle {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+      position: relative;
+      z-index: 2;
+      text-align: center;
+    }
+
+    .toggle-arrow {
+      font-size: 14px;
+      transition: transform 0.4s ease;
+      position: relative;
+      z-index: 2;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .toggle-btn.active .toggle-arrow {
+      transform: rotate(180deg);
+    }
+
+    .toggle-btn.active .toggle-text {
+      color: #ff69b4;
+    }
+
+    /* Old Projects Section - HIDDEN BY DEFAULT */
+    .old-projects {
+      display: none;
+      opacity: 0;
+      margin-top: 60px;
+    }
+
+    .old-projects.visible {
+      display: block;
+      opacity: 1;
+      animation: fadeInUp 0.8s ease forwards;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .old-projects-header {
+      text-align: center;
+      margin-bottom: 60px;
+      padding: 40px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .old-projects-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, 
+        rgba(120, 119, 198, 0.03) 0%,
+        rgba(255, 105, 180, 0.03) 100%);
+      pointer-events: none;
+    }
+
+    .old-projects-header h3 {
+      font-size: 2rem;
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 15px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .old-projects-header p {
+      color: rgba(255, 255, 255, 0.6);
+      line-height: 1.6;
+      max-width: 600px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+
+    .old-addon-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 80px;
+    }
+
+    .old-addon {
+      position: relative;
+      max-width: 700px;
+      width: 100%;
+      opacity: 0.85;
+    }
+
+    .old-addon:nth-child(odd) {
+      margin-left: auto;
+      margin-right: 15%;
+    }
+
+    .old-addon:nth-child(even) {
+      margin-right: auto;
+      margin-left: 15%;
+    }
+
+    .old-addon .addon-card {
+      border-color: rgba(255, 255, 255, 0.05);
+      background: rgba(255, 255, 255, 0.02);
+      transform: scale(0.95);
+    }
+
+    .old-addon .addon-card:hover {
+      transform: scale(0.97);
+      box-shadow: 0 10px 30px rgba(120, 119, 198, 0.2);
+    }
+
+    .old-addon .addon-date {
+      background: rgba(255, 255, 255, 0.05);
+      color: rgba(255, 255, 255, 0.5);
+      font-style: italic;
+    }
+
+    .old-addon .addon-title {
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+      .addon:nth-child(odd),
+      .addon:nth-child(even),
+      .old-addon:nth-child(odd),
+      .old-addon:nth-child(even) {
+        margin: 0 auto;
+        max-width: 90%;
+      }
+      
+      .container {
+        padding: 0 20px;
+      }
+      
+      .main-addons {
+        gap: 80px;
+      }
+
+      .toggle-btn {
+        min-width: 280px;
+        padding: 20px 25px;
+      }
+
+      .old-projects-toggle {
+        margin: 0 20px;
+      }
+
+      .old-addon-grid {
+        gap: 60px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .hero {
+        padding: 0 20px;
+      }
+      
+      .addon-card {
+        padding: 20px;
+      }
+      
+      .addon-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      
+      .addon-date {
+        align-self: flex-end;
+      }
+      
+      .main-addons {
+        gap: 60px;
+      }
+
+      .separator-section {
+        flex-direction: column;
+        gap: 20px;
+        margin: 80px 0 30px 0;
+      }
+
+      .separator-line {
+        width: 100%;
+        height: 1px;
+      }
+
+      .old-projects-toggle {
+        margin: 0;
+      }
+
+      .toggle-btn {
+        min-width: 250px;
+        padding: 18px 20px;
+      }
+
+      .old-projects-header {
+        padding: 25px 20px;
+      }
+
+      .old-addon-grid {
+        gap: 50px;
+      }
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #7877c6, #ff69b4);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, #9796d4, #ff8bc4);
+    }
+  </style>
+</head>
+<body>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <h1>Portfolio - Zully</h1>
+      <p class="subtitle">Créations d'addons personnalisés</p>
+      <div class="scroll-indicator">
+        <span>Découvrir</span>
+        <div class="scroll-arrow"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Addons Section -->
+  <section class="addons-section">
+    <div class="container">
+      <h2 class="section-title">Mes Créations</h2>
+      
+      <!-- SEULEMENT les 2 créations principales (toujours visibles) -->
+      <div class="main-addons">
+        <div class="addon">
+          <div class="addon-card">
+            <div class="addon-header">
+              <h3 class="addon-title">RewardCalendar</h3>
+              <span class="addon-date">03 juin 2025</span>
+            </div>
+            <div class="video-container">
+              <div class="video-wrapper">
+                <iframe src="https://www.youtube.com/embed/mRuW9s8es-s" 
+                        allowfullscreen 
+                        title="RewardCalendar Demo"></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="addon">
+          <div class="addon-card">
+            <div class="addon-header">
+              <h3 class="addon-title">RewardCalendar</h3>
+              <span class="addon-date">03 juin 2025</span>
+            </div>
+            <div class="video-container">
+              <div class="video-wrapper">
+                <iframe src="https://www.youtube.com/embed/F5OJuACufpU" 
+                        allowfullscreen 
+                        title="RewardCalendar Demo"></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Separator Section -->
+      <div class="separator-section">
+        <div class="separator-line"></div>
+        <div class="old-projects-toggle">
+          <button class="toggle-btn" id="toggleOldProjects">
+            <span class="toggle-icon">📚</span>
+            <span class="toggle-text">Voir mes premiers addons</span>
+            <span class="toggle-subtitle">Mes débuts en développement (apprentissage)</span>
+            <div class="toggle-arrow">▼</div>
+          </button>
+        </div>
+        <div class="separator-line"></div>
+      </div>
+
+      <!-- Old Projects Section (HIDDEN BY DEFAULT) -->
+      <div class="old-projects" id="oldProjectsSection">
+        <div class="old-projects-header">
+          <h3>Mes Premières Créations</h3>
+          <p>Ces addons représentent mes débuts dans le développement GMod. Bien qu'ils soient moins sophistiqués que mes créations actuelles, ils montrent mon évolution et ma progression dans l'apprentissage.</p>
+        </div>
+
+        <div class="old-addon-grid">
+          <div class="old-addon">
+            <div class="addon-card">
+              <div class="addon-header">
+                <h3 class="addon-title">Boutique</h3>
+                <span class="addon-date">Début 2024</span>
+              </div>
+              <div class="video-container">
+                <div class="video-wrapper">
+                  <iframe src="https://www.youtube.com/embed/iTSZobU88AE" 
+                          allowfullscreen 
+                          title="Boutique Demo"></iframe>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="old-addon">
+            <div class="addon-card">
+              <div class="addon-header">
+                <h3 class="addon-title">Prime</h3>
+                <span class="addon-date">2023</span>
+              </div>
+              <div class="video-container">
+                <div class="video-wrapper">
+                  <iframe src="https://www.youtube.com/embed/AJ6ocvHMMjI" 
+                          allowfullscreen 
+                          title="Prime Demo"></iframe>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="old-addon">
+            <div class="addon-card">
+              <div class="addon-header">
+                <h3 class="addon-title">Fight Club</h3>
+                <span class="addon-date">Début 2023</span>
+              </div>
+              <div class="video-container">
+                <div class="video-wrapper">
+                  <iframe src="https://www.youtube.com/embed/7VrrYlrLruI" 
+                          allowfullscreen 
+                          title="Fight Club Demo"></iframe>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    console.log("🔥 Chargement du portfolio...");
+
+    // Attendre que GSAP soit chargé
+    function initPortfolio() {
+      if (typeof gsap === 'undefined') {
+        console.log("⏳ Attente de GSAP...");
+        setTimeout(initPortfolio, 100);
+        return;
+      }
+
+      console.log("✅ GSAP chargé, initialisation des animations...");
+
+      // Enregistrer les plugins GSAP
+      gsap.registerPlugin(ScrollTrigger);
+      if (typeof ScrollToPlugin !== 'undefined') {
+        gsap.registerPlugin(ScrollToPlugin);
+      }
+
+      // Animations du hero
+      const heroTimeline = gsap.timeline();
+      heroTimeline
+        .from(".hero h1", {
+          duration: 1.2,
+          y: 100,
+          opacity: 0,
+          ease: "power3.out"
+        })
+        .from(".hero .subtitle", {
+          duration: 1,
+          y: 50,
+          opacity: 0,
+          ease: "power2.out"
+        }, "-=0.8")
+        .from(".scroll-indicator", {
+          duration: 0.8,
+          y: 30,
+          opacity: 0,
+          ease: "power2.out"
+        }, "-=0.5");
+
+      // Animation du titre de section
+      gsap.from(".section-title", {
+        scrollTrigger: {
+          trigger: ".section-title",
+          start: "top 80%",
+          toggleActions: "play none none none"
+        },
+        duration: 1,
+        y: 50,
+        opacity: 0,
+        ease: "power2.out"
+      });
+
+      // Animations des 2 addons principaux
+      gsap.utils.toArray(".main-addons .addon").forEach((addon, index) => {
+        const isOdd = index % 2 === 0;
+        
+        // Animation d'entrée avec direction alternée
+        gsap.from(addon, {
+          scrollTrigger: {
+            trigger: addon,
+            start: "top 85%",
+            toggleActions: "play none none none"
+          },
+          duration: 1.2,
+          x: isOdd ? 120 : -120,
+          y: 60,
+          opacity: 0,
+          scale: 0.85,
+          rotation: isOdd ? 3 : -3,
+          ease: "power3.out"
+        });
+
+        // Effet parallax
+        gsap.to(addon, {
+          scrollTrigger: {
+            trigger: addon,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 2
+          },
+          y: (index % 2 === 0) ? -40 : 40,
+          ease: "none"
+        });
+
+        // Animations hover
+        const card = addon.querySelector('.addon-card');
+        const videoWrapper = addon.querySelector('.video-wrapper');
+        
+        if (card && videoWrapper) {
+          card.addEventListener('mouseenter', () => {
+            gsap.to(card, {
+              duration: 0.4,
+              scale: 1.02,
+              y: -8,
+              boxShadow: "0 0 40px rgba(120, 119, 198, 0.4), 0 0 80px rgba(120, 119, 198, 0.2)",
+              ease: "power2.out"
+            });
+            
+            gsap.to(videoWrapper, {
+              duration: 0.4,
+              scale: 1.05,
+              ease: "power2.out"
+            });
+          });
+          
+          card.addEventListener('mouseleave', () => {
+            gsap.to(card, {
+              duration: 0.4,
+              scale: 1,
+              y: 0,
+              boxShadow: "0 15px 35px rgba(0, 0, 0, 0.4)",
+              ease: "power2.out"
+            });
+            
+            gsap.to(videoWrapper, {
+              duration: 0.4,
+              scale: 1,
+              ease: "power2.out"
+            });
+          });
+        }
+      });
+
+      // Animation du bouton toggle
+      const separatorSection = document.querySelector('.separator-section');
+      if (separatorSection) {
+        gsap.from(".toggle-btn", {
+          scrollTrigger: {
+            trigger: ".separator-section",
+            start: "top 80%",
+            toggleActions: "play none none none"
+          },
+          duration: 1,
+          scale: 0.9,
+          opacity: 0,
+          y: 30,
+          ease: "power2.out"
+        });
+      }
+
+      // Toggle button functionality
+      const toggleBtn = document.getElementById('toggleOldProjects');
+      const oldProjectsSection = document.getElementById('oldProjectsSection');
+
+      if (toggleBtn && oldProjectsSection) {
+        let isOldProjectsVisible = false;
+
+        toggleBtn.addEventListener('click', () => {
+          isOldProjectsVisible = !isOldProjectsVisible;
+          
+          if (isOldProjectsVisible) {
+            // Show old projects
+            toggleBtn.classList.add('active');
+            const toggleText = toggleBtn.querySelector('.toggle-text');
+            const toggleSubtitle = toggleBtn.querySelector('.toggle-subtitle');
+            
+            if (toggleText) toggleText.textContent = 'Masquer mes premiers addons';
+            if (toggleSubtitle) toggleSubtitle.textContent = 'Mes débuts (moins sophistiqués)';
+            
+            oldProjectsSection.classList.add('visible');
+            
+            // Animate old projects entrance
+            setTimeout(() => {
+              const oldAddons = document.querySelectorAll('.old-addon');
+              if (oldAddons.length > 0) {
+                gsap.from(oldAddons, {
+                  duration: 1,
+                  y: 60,
+                  opacity: 0,
+                  scale: 0.9,
+                  stagger: 0.15,
+                  ease: "power2.out"
+                });
+              }
+            }, 300);
+            
+            // Add hover effects to old projects
+            setTimeout(() => {
+              gsap.utils.toArray(".old-addon").forEach((addon) => {
+                const card = addon.querySelector('.addon-card');
+                const videoWrapper = addon.querySelector('.video-wrapper');
+                
+                if (card && videoWrapper) {
+                  card.addEventListener('mouseenter', () => {
+                    gsap.to(card, {
+                      duration: 0.4,
+                      scale: 0.98,
+                      y: -5,
+                      boxShadow: "0 0 25px rgba(120, 119, 198, 0.3)",
+                      ease: "power2.out"
+                    });
+                    
+                    gsap.to(videoWrapper, {
+                      duration: 0.4,
+                      scale: 1.03,
+                      ease: "power2.out"
+                    });
+                  });
+                  
+                  card.addEventListener('mouseleave', () => {
+                    gsap.to(card, {
+                      duration: 0.4,
+                      scale: 0.95,
+                      y: 0,
+                      boxShadow: "0 10px 25px rgba(0, 0, 0, 0.3)",
+                      ease: "power2.out"
+                    });
+                    
+                    gsap.to(videoWrapper, {
+                      duration: 0.4,
+                      scale: 1,
+                      ease: "power2.out"
+                    });
+                  });
+                }
+              });
+            }, 800);
+            
+          } else {
+            // Hide old projects
+            toggleBtn.classList.remove('active');
+            const toggleText = toggleBtn.querySelector('.toggle-text');
+            const toggleSubtitle = toggleBtn.querySelector('.toggle-subtitle');
+            
+            if (toggleText) toggleText.textContent = 'Voir mes premiers addons';
+            if (toggleSubtitle) toggleSubtitle.textContent = 'Mes débuts en développement (apprentissage)';
+            
+            oldProjectsSection.classList.remove('visible');
+          }
+          
+          // Refresh ScrollTrigger after layout change
+          setTimeout(() => {
+            ScrollTrigger.refresh();
+          }, 800);
+        });
+      }
+
+      // Scroll vers la section au clic sur l'indicateur
+      const scrollIndicator = document.querySelector('.scroll-indicator');
+      if (scrollIndicator) {
+        scrollIndicator.addEventListener('click', () => {
+          if (typeof ScrollToPlugin !== 'undefined') {
+            gsap.to(window, {
+              duration: 1.5,
+              scrollTo: ".addons-section",
+              ease: "power2.inOut"
+            });
+          } else {
+            const addonsSection = document.querySelector('.addons-section');
+            if (addonsSection) {
+              addonsSection.scrollIntoView({
+                behavior: 'smooth'
+              });
+            }
+          }
+        });
+      }
+
+      // Rafraîchir ScrollTrigger
+      ScrollTrigger.refresh();
+      
+      console.log("🚀 Portfolio chargé avec succès !");
+    }
+
+    // Lancer l'initialisation
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initPortfolio);
+    } else {
+      initPortfolio();
+    }
+
+    // Gérer le redimensionnement
+    window.addEventListener('resize', () => {
+      if (typeof ScrollTrigger !== 'undefined') {
+        ScrollTrigger.refresh();
+      }
+    });
+  </script>
+</body>
+</html>
