@@ -466,13 +466,14 @@
     function buildBolt(x1,y1,x2,y2,rough,depth,segs) {
       if (depth === 0) { segs.push([x1,y1,x2,y2]); return; }
       const mx = (x1+x2)/2 + (Math.random()-.5)*rough;
-      const my = (y1+y2)/2 + (Math.random()-.5)*rough;
+      const my = (y1+y2)/2 + (Math.random()-.5)*rough*0.4;
       buildBolt(x1,y1,mx,my,rough*.6,depth-1,segs);
       buildBolt(mx,my,x2,y2,rough*.6,depth-1,segs);
-      if (depth > 1 && Math.random() < 0.38) {
-        const bx = mx + (Math.random()-.5)*rough;
-        const by = my + rough*.75;
-        buildBolt(mx,my,bx,by,rough*.45,depth-2,segs);
+      // branches naturelles
+      if (depth > 2 && Math.random() < 0.45) {
+        const bx = mx + (Math.random()-.5)*rough*1.2;
+        const by = my + rough * (0.5 + Math.random()*0.5);
+        buildBolt(mx,my,bx,by,rough*.4,depth-2,segs);
       }
     }
 
@@ -486,30 +487,37 @@
       ctx.stroke();
     }
 
-    function flash() {
-      const x   = 80 + Math.random() * (lc.width - 160);
-      const tx  = x  + (Math.random()-.5) * 160;
-      const ty  = lc.height * (0.2 + Math.random() * 0.55);
-      const segs = [];
-      buildBolt(x, 0, tx, ty, 110, 6, segs);
+    const activeBolts = [];
 
-      let alpha = 1;
-      const step = () => {
-        ctx.clearRect(0,0,lc.width,lc.height);
-        if (alpha <= 0) return;
-        ctx.globalAlpha = alpha;
-        drawSegs(segs, 'rgba(56,189,248,0.3)', 6, 30);
-        drawSegs(segs, 'rgba(200,240,255,0.9)', 1, 6);
-        ctx.globalAlpha = 1;
-        alpha -= 0.07;
-        setTimeout(step, 35);
-      };
-      step();
+    function spawnBolt() {
+      // vertical ou diagonal (angle entre -35deg et +35deg)
+      const x1   = 60 + Math.random() * (lc.width - 120);
+      const diag  = (Math.random()-.5) * lc.width * 0.55; // décalage horizontal
+      const segs  = [];
+      buildBolt(x1, 0, x1 + diag, lc.height, 80, 7, segs);
+      activeBolts.push({ segs, alpha: 1 });
     }
 
-    (function schedule() {
-      setTimeout(() => { flash(); schedule(); }, 2800 + Math.random() * 6000);
-    })();
+    function renderLoop() {
+      ctx.clearRect(0, 0, lc.width, lc.height);
+      for (let i = activeBolts.length - 1; i >= 0; i--) {
+        const b = activeBolts[i];
+        ctx.globalAlpha = b.alpha;
+        drawSegs(b.segs, 'rgba(56,189,248,0.25)', 5, 28);
+        drawSegs(b.segs, 'rgba(220,245,255,0.88)', 1, 5);
+        b.alpha -= 0.045;
+        if (b.alpha <= 0) activeBolts.splice(i, 1);
+      }
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(renderLoop);
+    }
+    renderLoop();
+
+    // un éclair toutes les 3s, parfois double
+    setInterval(() => {
+      spawnBolt();
+      if (Math.random() < 0.4) setTimeout(spawnBolt, 150);
+    }, 3000);
   </script>
 </body>
 </html>
