@@ -1,112 +1,195 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Zullyfolio</title>
+  <title>Zully — Dev Lua · Garry's Mod</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
   <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     :root {
-      --bg: #0b1017;
-      --bg-soft: #121a25;
-      --line: #243244;
-      --text: #ecf2fa;
-      --muted: #9cb1c8;
-      --accent: #4fc3ff;
+      --bg:       #07090d;
+      --surface:  #0e1117;
+      --border:   rgba(255,255,255,0.07);
+      --border-h: rgba(255,255,255,0.14);
+      --text:     #e8edf5;
+      --muted:    #5a6a80;
+      --sky:      #38bdf8;
+      --green:    #4ade80;
+      --orange:   #fb923c;
+      --purple:   #a78bfa;
+      --red:      #f87171;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html, body {
-      min-height: 100%;
-    }
+    html, body { min-height: 100%; }
 
     body {
-      font-family: "Manrope", sans-serif;
-      background: radial-gradient(circle at top right, #14283f 0%, var(--bg) 45%);
+      font-family: "Inter", sans-serif;
+      background-color: var(--bg);
+      background-image:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(56,189,248,0.08), transparent),
+        radial-gradient(circle at 85% 80%, rgba(167,139,250,0.05), transparent 45%);
       color: var(--text);
-      line-height: 1.5;
+      line-height: 1.6;
     }
 
-    .container {
-      width: min(980px, 92vw);
+    /* dot grid overlay */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 28px 28px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      width: min(1060px, 92vw);
       margin: 0 auto;
     }
 
+    /* ── HERO ── */
     .hero {
-      padding: 5.5rem 0 2.5rem;
+      padding: 6rem 0 3.5rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 3.5rem;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.75rem;
+      color: var(--sky);
+      background: rgba(56,189,248,0.08);
+      border: 1px solid rgba(56,189,248,0.2);
+      border-radius: 999px;
+      padding: 0.3rem 0.85rem;
+      margin-bottom: 1.4rem;
+      letter-spacing: 0.04em;
+    }
+
+    .hero-badge::before {
+      content: "";
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--sky);
+      box-shadow: 0 0 8px var(--sky);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.4; }
     }
 
     .hero h1 {
-      font-size: clamp(2rem, 5vw, 3.6rem);
-      letter-spacing: -0.02em;
-      margin-bottom: 0.6rem;
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      background: linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.45));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.9rem;
     }
 
     .hero p {
-      color: var(--muted);
       font-size: clamp(1rem, 1.8vw, 1.15rem);
+      color: var(--muted);
+      max-width: 520px;
     }
 
-    .main {
-      padding: 0 0 4rem;
+    .hero p strong {
+      color: rgba(232,237,245,0.7);
+      font-weight: 600;
     }
 
+    /* ── SECTION TITLE ── */
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.4rem;
+    }
+
+    /* ── GRID ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.2rem;
+      margin-bottom: 4rem;
+    }
+
+    /* ── CARD ── */
     .card {
-      background: linear-gradient(165deg, rgba(18, 26, 37, 0.92), rgba(14, 22, 33, 0.98));
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      padding: 1.1rem;
-      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1rem;
+      transition: border-color 220ms ease, transform 220ms ease, box-shadow 220ms ease;
+    }
+
+    .card:hover {
+      border-color: var(--border-h);
+      transform: translateY(-3px);
+      box-shadow: 0 18px 50px rgba(0,0,0,0.5);
     }
 
     .card-head {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 1rem;
-      margin-bottom: 0.8rem;
-      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
     }
 
     .card-head h2 {
-      font-size: clamp(1.1rem, 2.1vw, 1.5rem);
+      font-size: 1rem;
       font-weight: 700;
+      color: var(--text);
     }
 
+    /* coloured tags */
     .tag {
-      font-size: 0.72rem;
-      font-weight: 800;
-      letter-spacing: 0.06em;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: #06233a;
-      background: linear-gradient(100deg, #8fdbff, #4fc3ff);
       border-radius: 999px;
-      padding: 0.32rem 0.62rem;
+      padding: 0.28rem 0.7rem;
       white-space: nowrap;
+      flex-shrink: 0;
     }
+    .tag-sky    { color: #0c2d3e; background: var(--sky); }
+    .tag-green  { color: #0d2b17; background: var(--green); }
+    .tag-orange { color: #2d1604; background: var(--orange); }
+    .tag-purple { color: #1e1330; background: var(--purple); }
+    .tag-red    { color: #2d0a0a; background: var(--red); }
 
+    /* 16:9 video embed */
     .video {
       position: relative;
       width: 100%;
-      border-radius: 12px;
+      border-radius: 10px;
       overflow: hidden;
-      background: #070d14;
-      border: 1px solid #1f2e40;
+      background: #040608;
     }
-
     .video::before {
       content: "";
       display: block;
       padding-bottom: 56.25%;
     }
-
     .video iframe {
       position: absolute;
       inset: 0;
@@ -116,153 +199,160 @@
     }
 
     .card-foot {
-      margin-top: 0.85rem;
+      margin-top: 0.75rem;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .btn {
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--muted);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.42rem 0.85rem;
+      transition: color 160ms, border-color 160ms, background 160ms;
+    }
+    .btn:hover {
+      color: var(--text);
+      border-color: var(--border-h);
+      background: rgba(255,255,255,0.07);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1.4rem 0 2.5rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 1rem;
       flex-wrap: wrap;
+    }
+
+    .footer-name {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.82rem;
       color: var(--muted);
-      font-size: 0.95rem;
     }
 
-    .btn {
-      text-decoration: none;
-      color: #042238;
-      background: linear-gradient(100deg, #8fdbff, #4fc3ff);
-      border: 0;
-      border-radius: 10px;
-      font-weight: 800;
-      padding: 0.56rem 0.88rem;
-      transition: transform 160ms ease;
+    .footer-stack {
+      display: flex;
+      gap: 0.5rem;
     }
 
-    .btn:hover {
-      transform: translateY(-2px);
+    .pill {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.22rem 0.6rem;
     }
 
-    footer {
-      border-top: 1px solid var(--line);
-      color: #89a1ba;
-      padding: 1.1rem 0 2rem;
-      font-size: 0.9rem;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));
-      gap: 1.4rem;
-    }
-
-    @media (max-width: 640px) {
-      .hero {
-        padding-top: 4rem;
-      }
-      .grid {
-        grid-template-columns: 1fr;
-      }
+    /* ── RESPONSIVE ── */
+    @media (max-width: 700px) {
+      .hero { padding: 4rem 0 2.5rem; }
+      .grid { grid-template-columns: 1fr; }
+      footer { flex-direction: column; align-items: flex-start; }
     }
   </style>
 </head>
 <body>
   <header class="hero">
-    <div class="container">
-      <h1>Zullyfolio</h1>
-      <p>Portfolio video</p>
+    <div class="wrap">
+      <div class="hero-badge">Disponible pour projets</div>
+      <h1>Zully</h1>
+      <p>Développeur <strong>Lua</strong> spécialisé <strong>Garry's Mod</strong> — HUD, SWEP, systèmes de jeu complets.</p>
     </div>
   </header>
 
-  <main class="main">
-    <div class="container">
+  <main>
+    <div class="wrap">
+      <p class="section-label">Projets &amp; démos</p>
       <div class="grid">
 
         <section class="card">
           <div class="card-head">
             <h2>Créateur de personnage</h2>
-            <span class="tag">Creator</span>
+            <span class="tag tag-purple">Creator</span>
           </div>
           <div class="video">
-            <iframe
-              src="https://www.youtube.com/embed/gxP0chFEgKY"
+            <iframe src="https://www.youtube.com/embed/gxP0chFEgKY"
               title="Créateur de personnage"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen>
-            </iframe>
+              allowfullscreen></iframe>
           </div>
           <div class="card-foot">
-            <a class="btn" href="https://youtu.be/gxP0chFEgKY" target="_blank" rel="noopener noreferrer">Voir sur YouTube</a>
+            <a class="btn" href="https://youtu.be/gxP0chFEgKY" target="_blank" rel="noopener noreferrer">Voir sur YouTube ↗</a>
           </div>
         </section>
 
         <section class="card">
           <div class="card-head">
             <h2>Menu OST</h2>
-            <span class="tag">Menu Musique</span>
+            <span class="tag tag-green">Musique</span>
           </div>
           <div class="video">
-            <iframe
-              src="https://www.youtube.com/embed/PKwMDglRsX8"
+            <iframe src="https://www.youtube.com/embed/PKwMDglRsX8"
               title="Menu OST"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen>
-            </iframe>
+              allowfullscreen></iframe>
           </div>
           <div class="card-foot">
-            <a class="btn" href="https://youtu.be/PKwMDglRsX8" target="_blank" rel="noopener noreferrer">Voir sur YouTube</a>
+            <a class="btn" href="https://youtu.be/PKwMDglRsX8" target="_blank" rel="noopener noreferrer">Voir sur YouTube ↗</a>
           </div>
         </section>
 
         <section class="card">
           <div class="card-head">
             <h2>HUD</h2>
-            <span class="tag">HUD</span>
+            <span class="tag tag-orange">HUD</span>
           </div>
           <div class="video">
-            <iframe
-              src="https://www.youtube.com/embed/PlI2DeU5A8Q"
+            <iframe src="https://www.youtube.com/embed/PlI2DeU5A8Q"
               title="HUD"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen>
-            </iframe>
+              allowfullscreen></iframe>
           </div>
           <div class="card-foot">
-            <a class="btn" href="https://youtu.be/PlI2DeU5A8Q" target="_blank" rel="noopener noreferrer">Voir sur YouTube</a>
+            <a class="btn" href="https://youtu.be/PlI2DeU5A8Q" target="_blank" rel="noopener noreferrer">Voir sur YouTube ↗</a>
           </div>
         </section>
 
         <section class="card">
           <div class="card-head">
             <h2>Inventaire</h2>
-            <span class="tag">Inventaire</span>
+            <span class="tag tag-sky">Inventaire</span>
           </div>
           <div class="video">
-            <iframe
-              src="https://www.youtube.com/embed/TscvIHckZhQ"
+            <iframe src="https://www.youtube.com/embed/TscvIHckZhQ"
               title="Inventaire"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen>
-            </iframe>
+              allowfullscreen></iframe>
           </div>
           <div class="card-foot">
-            <a class="btn" href="https://youtu.be/TscvIHckZhQ" target="_blank" rel="noopener noreferrer">Voir sur YouTube</a>
+            <a class="btn" href="https://youtu.be/TscvIHckZhQ" target="_blank" rel="noopener noreferrer">Voir sur YouTube ↗</a>
           </div>
         </section>
 
         <section class="card">
           <div class="card-head">
             <h2>SWEP</h2>
-            <span class="tag">SWEP</span>
+            <span class="tag tag-red">SWEP</span>
           </div>
           <div class="video">
-            <iframe
-              src="https://www.youtube.com/embed/00XyB6rfw_Q"
+            <iframe src="https://www.youtube.com/embed/00XyB6rfw_Q"
               title="SWEP"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen>
-            </iframe>
+              allowfullscreen></iframe>
           </div>
           <div class="card-foot">
-            <a class="btn" href="https://youtu.be/00XyB6rfw_Q" target="_blank" rel="noopener noreferrer">Voir sur YouTube</a>
+            <a class="btn" href="https://youtu.be/00XyB6rfw_Q" target="_blank" rel="noopener noreferrer">Voir sur YouTube ↗</a>
           </div>
         </section>
 
@@ -271,7 +361,14 @@
   </main>
 
   <footer>
-    <div class="container">Zullyfolio</div>
+    <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;width:100%">
+      <span class="footer-name">zully · 2026</span>
+      <div class="footer-stack">
+        <span class="pill">Lua</span>
+        <span class="pill">Garry's Mod</span>
+        <span class="pill">GLua</span>
+      </div>
+    </div>
   </footer>
 </body>
 </html>
