@@ -240,6 +240,8 @@
     </div>
   </footer>
 
+  <audio id="bg-audio" src="AOT_Carla_no_Kokuhaku.mp3" loop preload="auto"></audio>
+
   <div id="music-player">
     <span id="music-label">Ambiance</span>
     <button id="music-btn" title="Mute / Unmute">♪</button>
@@ -274,125 +276,34 @@
     requestAnimationFrame(loop);
   })();
 
-  // ── Musique style manga/anime (Web Audio) ──
-  const Music = (() => {
-    let actx, master, reverbNode, muted = false, vol = 0.30, ready = false;
-    let loopTimeout = null;
+  // ── Musique MP3 ──
+  const audio    = document.getElementById('bg-audio');
+  const musicBtn = document.getElementById('music-btn');
+  const musicVol = document.getElementById('music-vol');
 
-    // Gamme pentatonique mineure — ambiance combat/anime
-    // La3 mineur penta : A3 C4 D4 E4 G4 A4 C5 D5 E5
-    const scale = [220.0, 261.6, 293.7, 329.6, 392.0, 440.0, 523.3, 587.3, 659.3];
+  audio.volume = 0.30;
 
-    // Mélodie principale (indices dans scale)
-    const melPattern = [5,7,8,7,5,4,2,4,5,3,2,0,2,3,4,5];
-    const melRhythm  = [0.25,0.25,0.5,0.25,0.25,0.5,0.25,0.5,0.25,0.25,0.5,0.25,0.25,0.25,0.25,0.75];
-
-    // Basse (indices, une octave plus bas / 2)
-    const bassPattern = [0,0,2,0, 4,4,3,4, 0,0,2,0, 3,3,2,3];
-    const bassRhythm  = [0.5,0.25,0.25,0.5, 0.5,0.25,0.25,0.5, 0.5,0.25,0.25,0.5, 0.5,0.25,0.25,0.5];
-
-    function makeReverb(ctx) {
-      const conv = ctx.createConvolver();
-      const len  = Math.floor(ctx.sampleRate * 2.5);
-      const buf  = ctx.createBuffer(2, len, ctx.sampleRate);
-      for (let c = 0; c < 2; c++) {
-        const d = buf.getChannelData(c);
-        for (let i = 0; i < len; i++) d[i] = (Math.random()*2-1) * Math.exp(-i/(len*0.25));
-      }
-      conv.buffer = buf;
-      return conv;
-    }
-
-    function playNote(freq, start, dur, gainVal, type, targetNode) {
-      const osc = actx.createOscillator();
-      const env = actx.createGain();
-      osc.type = type;
-      osc.frequency.value = freq;
-      env.gain.setValueAtTime(0, start);
-      env.gain.linearRampToValueAtTime(gainVal, start + 0.03);
-      env.gain.setValueAtTime(gainVal, start + dur * 0.65);
-      env.gain.exponentialRampToValueAtTime(0.0001, start + dur);
-      osc.connect(env); env.connect(targetNode);
-      osc.start(start); osc.stop(start + dur + 0.05);
-    }
-
-    function scheduleLoop() {
-      const now = actx.currentTime + 0.05;
-
-      // Pads atmosphériques (tiennent tout le long)
-      const padDur = melRhythm.reduce((a,b)=>a+b, 0);
-      [220, 261.6, 329.6, 392].forEach((f, i) => {
-        playNote(f, now, padDur, [0.08,0.06,0.05,0.04][i], 'sine', reverbNode);
-      });
-
-      // Mélodie
-      let t = now;
-      melPattern.forEach((idx, i) => {
-        const dur = melRhythm[i];
-        playNote(scale[idx], t, dur * 0.85, 0.18, 'triangle', reverbNode);
-        t += dur;
-      });
-
-      // Basse
-      let tb = now;
-      bassPattern.forEach((idx, i) => {
-        const dur = bassRhythm[i];
-        playNote(scale[idx] / 2, tb, dur * 0.75, 0.22, 'sawtooth', master);
-        tb += dur;
-      });
-
-      const loopDur = melRhythm.reduce((a,b)=>a+b, 0);
-      loopTimeout = setTimeout(scheduleLoop, (loopDur - 0.2) * 1000);
-    }
-
-    return {
-      init() {
-        if (ready) return;
-        ready = true;
-        actx       = new (window.AudioContext || window.webkitAudioContext)();
-        master     = actx.createGain();
-        master.gain.value = vol;
-        reverbNode = makeReverb(actx);
-        reverbNode.connect(master);
-        master.connect(actx.destination);
-        scheduleLoop();
-      },
-      setMute(m) {
-        muted = m;
-        if (master) master.gain.linearRampToValueAtTime(m ? 0 : vol, actx.currentTime + 0.4);
-      },
-      setVol(v) {
-        vol = v / 100;
-        if (master && !muted) master.gain.linearRampToValueAtTime(vol, actx.currentTime + 0.15);
-      },
-      isMuted() { return muted; }
-    };
-  })();
-
+  // Démarre au 1er clic (politique navigateur)
   let musicStarted = false;
   function startMusic() {
     if (musicStarted) return;
     musicStarted = true;
-    Music.init();
+    audio.play().catch(() => {});
   }
   document.addEventListener('click', startMusic, { once: true });
 
-  const musicBtn = document.getElementById('music-btn');
-  const musicVol = document.getElementById('music-vol');
-
   musicBtn.addEventListener('click', () => {
     startMusic();
-    const m = !Music.isMuted();
-    Music.setMute(m);
-    musicBtn.textContent = m ? '♪̶' : '♪';
-    musicBtn.classList.toggle('muted', m);
+    audio.muted = !audio.muted;
+    musicBtn.textContent = audio.muted ? '♪̶' : '♪';
+    musicBtn.classList.toggle('muted', audio.muted);
   });
 
   musicVol.addEventListener('input', () => {
     startMusic();
-    Music.setVol(+musicVol.value);
-    if (Music.isMuted()) {
-      Music.setMute(false);
+    audio.volume = musicVol.value / 100;
+    if (audio.muted) {
+      audio.muted = false;
       musicBtn.textContent = '♪';
       musicBtn.classList.remove('muted');
     }
