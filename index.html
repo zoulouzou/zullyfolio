@@ -10,6 +10,40 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    /* scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg, #07090d); }
+    ::-webkit-scrollbar-thumb { background: rgba(56,189,248,0.35); border-radius: 999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(56,189,248,0.6); }
+
+    /* custom cursor */
+    * { cursor: none !important; }
+    #cur-dot {
+      position: fixed; top: 0; left: 0;
+      width: 6px; height: 6px;
+      background: #38bdf8;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: background 200ms;
+    }
+    #cur-ring {
+      position: fixed; top: 0; left: 0;
+      width: 32px; height: 32px;
+      border: 1.5px solid rgba(56,189,248,0.5);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: width 200ms, height 200ms, border-color 200ms;
+    }
+    body:has(a:hover) #cur-ring,
+    body:has(button:hover) #cur-ring {
+      width: 44px; height: 44px;
+      border-color: rgba(56,189,248,0.8);
+    }
+
     :root {
       --bg:       #07090d;
       --surface:  #0e1117;
@@ -267,7 +301,7 @@
     <div class="wrap">
       <div class="hero-badge">Disponible pour projets</div>
       <h1>Zully</h1>
-      <p>Développeur <strong>Lua</strong> spécialisé <strong>Garry's Mod</strong> — HUD, SWEP, systèmes de jeu complets.</p>
+      <p>Je code en <strong>Lua</strong> sur GMod depuis un moment — HUD, SWEP, inventaire, tout ce qui rend un serveur vivant.</p>
     </div>
   </header>
 
@@ -370,5 +404,27 @@
       </div>
     </div>
   </footer>
+  <div id="cur-dot"></div>
+  <div id="cur-ring"></div>
+  <script>
+    const dot  = document.getElementById('cur-dot');
+    const ring = document.getElementById('cur-ring');
+    let rx = 0, ry = 0, mx = 0, my = 0;
+
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+
+    function loop() {
+      // dot snap
+      dot.style.left = mx + 'px';
+      dot.style.top  = my + 'px';
+      // ring lag
+      rx += (mx - rx) * 0.12;
+      ry += (my - ry) * 0.12;
+      ring.style.left = rx + 'px';
+      ring.style.top  = ry + 'px';
+      requestAnimationFrame(loop);
+    }
+    loop();
+  </script>
 </body>
 </html>
