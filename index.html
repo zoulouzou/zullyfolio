@@ -15,7 +15,6 @@
     ::-webkit-scrollbar-thumb { background: rgba(56,189,248,0.4); border-radius: 999px; }
     ::-webkit-scrollbar-thumb:hover { background: rgba(56,189,248,0.7); }
 
-    /* cursor custom sauf sur les vidéos */
     * { cursor: none !important; }
     body.over-video * { cursor: auto !important; }
     body.over-video #cur-dot,
@@ -25,8 +24,7 @@
       position: fixed; top: 0; left: 0;
       width: 6px; height: 6px; background: #38bdf8;
       border-radius: 50%; pointer-events: none; z-index: 9999;
-      transform: translate(-50%,-50%);
-      transition: opacity 150ms;
+      transform: translate(-50%,-50%); transition: opacity 150ms;
     }
     #cur-ring {
       position: fixed; top: 0; left: 0;
@@ -60,7 +58,6 @@
     }
 
     #lightning { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
-
     .wrap { position: relative; z-index: 2; width: min(1060px, 92vw); margin: 0 auto; }
 
     .hero { padding: 6rem 0 3.5rem; border-bottom: 1px solid var(--border); margin-bottom: 3.5rem; }
@@ -112,18 +109,19 @@
     .tag-purple { color:#1e1330; background:var(--purple); }
     .tag-red    { color:#2d0a0a; background:var(--red); }
 
-    .video { position:relative; width:100%; border-radius:10px; overflow:hidden; background:#040608; }
-    .video::before { content:""; display:block; padding-bottom:56.25%; }
-    .video iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }
+    .video { position: relative; width: 100%; border-radius: 10px; overflow: hidden; background: #040608; }
+    .video::before { content: ""; display: block; padding-bottom: 56.25%; }
+    .yt-wrap { position: absolute; inset: 0; }
+    .yt-wrap iframe { position: absolute; inset: 0; width: 100% !important; height: 100% !important; border: 0; }
 
-    .card-foot { margin-top:.75rem; display:flex; justify-content:flex-end; }
+    .card-foot { margin-top: .75rem; display: flex; justify-content: flex-end; }
     .btn {
-      text-decoration:none; font-size:.8rem; font-weight:700;
-      color:var(--muted); background:rgba(255,255,255,.04);
-      border:1px solid var(--border); border-radius:8px; padding:.42rem .85rem;
-      transition:color 160ms, border-color 160ms, background 160ms;
+      text-decoration: none; font-size: .8rem; font-weight: 700;
+      color: var(--muted); background: rgba(255,255,255,.04);
+      border: 1px solid var(--border); border-radius: 8px; padding: .42rem .85rem;
+      transition: color 160ms, border-color 160ms, background 160ms;
     }
-    .btn:hover { color:var(--text); border-color:var(--border-h); background:rgba(255,255,255,.07); }
+    .btn:hover { color: var(--text); border-color: var(--border-h); background: rgba(255,255,255,.07); }
 
     /* ── Music Player ── */
     #music-player {
@@ -137,20 +135,20 @@
     #music-player:hover { border-color: var(--border-h); }
     #music-label { font-family:"JetBrains Mono",monospace; font-size:.65rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
     #music-btn {
-      background:none; border:none; color:var(--sky); font-size:1rem; line-height:1; padding:0;
-      transition:color 160ms, transform 160ms;
+      background: none; border: none; color: var(--sky); font-size: 1rem; line-height: 1; padding: 0;
+      transition: color 160ms, transform 160ms;
     }
-    #music-btn:hover { transform:scale(1.2); }
-    #music-btn.muted { color:var(--muted); }
+    #music-btn:hover { transform: scale(1.2); }
+    #music-btn.muted { color: var(--muted); }
     #music-vol {
-      -webkit-appearance:none; appearance:none;
-      width:70px; height:3px; background:rgba(255,255,255,.1); border-radius:999px; outline:none;
+      -webkit-appearance: none; appearance: none;
+      width: 70px; height: 3px; background: rgba(255,255,255,.1); border-radius: 999px; outline: none;
     }
     #music-vol::-webkit-slider-thumb {
-      -webkit-appearance:none; width:11px; height:11px;
-      border-radius:50%; background:var(--sky); box-shadow:0 0 6px var(--sky);
+      -webkit-appearance: none; width: 11px; height: 11px;
+      border-radius: 50%; background: var(--sky); box-shadow: 0 0 6px var(--sky);
     }
-    #music-vol::-moz-range-thumb { width:11px; height:11px; border:none; border-radius:50%; background:var(--sky); box-shadow:0 0 6px var(--sky); }
+    #music-vol::-moz-range-thumb { width:11px; height:11px; border:none; border-radius:50%; background:var(--sky); }
 
     footer { border-top: 1px solid var(--border); padding: 1.4rem 0 2.5rem; }
     footer .wrap { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; }
@@ -166,6 +164,7 @@
 </head>
 <body>
   <canvas id="lightning"></canvas>
+  <audio id="bg-audio" src="AOT_Carla_no_Kokuhaku.mp3" loop preload="auto"></audio>
 
   <header class="hero">
     <div class="wrap">
@@ -183,8 +182,7 @@
         <section class="card">
           <div class="card-head"><h2>Créateur de personnage</h2><span class="tag tag-purple">Creator</span></div>
           <div class="video">
-            <iframe src="https://www.youtube.com/embed/gxP0chFEgKY" title="Créateur de personnage"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <div class="yt-wrap" id="yt-gxP0chFEgKY" data-vid="gxP0chFEgKY"></div>
           </div>
           <div class="card-foot"><a class="btn" href="https://youtu.be/gxP0chFEgKY" target="_blank" rel="noopener noreferrer">Voir sur YouTube ↗</a></div>
         </section>
@@ -192,8 +190,7 @@
         <section class="card">
           <div class="card-head"><h2>Menu OST</h2><span class="tag tag-green">Musique</span></div>
           <div class="video">
-            <iframe src="https://www.youtube.com/embed/PKwMDglRsX8" title="Menu OST"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <div class="yt-wrap" id="yt-PKwMDglRsX8" data-vid="PKwMDglRsX8"></div>
           </div>
           <div class="card-foot"><a class="btn" href="https://youtu.be/PKwMDglRsX8" target="_blank" rel="noopener noreferrer">Voir sur YouTube ↗</a></div>
         </section>
@@ -201,8 +198,7 @@
         <section class="card">
           <div class="card-head"><h2>HUD</h2><span class="tag tag-orange">HUD</span></div>
           <div class="video">
-            <iframe src="https://www.youtube.com/embed/PlI2DeU5A8Q" title="HUD"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <div class="yt-wrap" id="yt-PlI2DeU5A8Q" data-vid="PlI2DeU5A8Q"></div>
           </div>
           <div class="card-foot"><a class="btn" href="https://youtu.be/PlI2DeU5A8Q" target="_blank" rel="noopener noreferrer">Voir sur YouTube ↗</a></div>
         </section>
@@ -210,8 +206,7 @@
         <section class="card">
           <div class="card-head"><h2>Inventaire</h2><span class="tag tag-sky">Inventaire</span></div>
           <div class="video">
-            <iframe src="https://www.youtube.com/embed/TscvIHckZhQ" title="Inventaire"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <div class="yt-wrap" id="yt-TscvIHckZhQ" data-vid="TscvIHckZhQ"></div>
           </div>
           <div class="card-foot"><a class="btn" href="https://youtu.be/TscvIHckZhQ" target="_blank" rel="noopener noreferrer">Voir sur YouTube ↗</a></div>
         </section>
@@ -219,8 +214,7 @@
         <section class="card">
           <div class="card-head"><h2>SWEP</h2><span class="tag tag-red">SWEP</span></div>
           <div class="video">
-            <iframe src="https://www.youtube.com/embed/00XyB6rfw_Q" title="SWEP"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <div class="yt-wrap" id="yt-00XyB6rfw_Q" data-vid="00XyB6rfw_Q"></div>
           </div>
           <div class="card-foot"><a class="btn" href="https://youtu.be/00XyB6rfw_Q" target="_blank" rel="noopener noreferrer">Voir sur YouTube ↗</a></div>
         </section>
@@ -240,8 +234,6 @@
     </div>
   </footer>
 
-  <audio id="bg-audio" src="AOT_Carla_no_Kokuhaku.mp3" loop preload="auto"></audio>
-
   <div id="music-player">
     <span id="music-label">Ambiance</span>
     <button id="music-btn" title="Mute / Unmute">♪</button>
@@ -251,24 +243,22 @@
   <div id="cur-dot"></div>
   <div id="cur-ring"></div>
 
+  <!-- YouTube IFrame API -->
+  <script src="https://www.youtube.com/iframe_api"></script>
   <script>
   // ── Cursor ──
-  const dot = document.getElementById('cur-dot');
+  const dot  = document.getElementById('cur-dot');
   const ring = document.getElementById('cur-ring');
   let rx = 0, ry = 0, mx = 0, my = 0;
   document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-
   document.querySelectorAll('a,button,.card,input').forEach(el => {
     el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
     el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
   });
-
-  // Désactive le curseur custom sur les vidéos
   document.querySelectorAll('.video').forEach(v => {
     v.addEventListener('mouseenter', () => document.body.classList.add('over-video'));
     v.addEventListener('mouseleave', () => document.body.classList.remove('over-video'));
   });
-
   (function loop() {
     dot.style.left = mx + 'px'; dot.style.top = my + 'px';
     rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
@@ -276,38 +266,83 @@
     requestAnimationFrame(loop);
   })();
 
-  // ── Musique MP3 ──
+  // ── Audio ──
   const audio    = document.getElementById('bg-audio');
   const musicBtn = document.getElementById('music-btn');
   const musicVol = document.getElementById('music-vol');
+  let targetVol  = 0.30;
+  let fadeTimer  = null;
 
   audio.volume = 0.30;
 
-  // Démarre au 1er clic (politique navigateur)
-  let musicStarted = false;
-  function startMusic() {
-    if (musicStarted) return;
-    musicStarted = true;
-    audio.play().catch(() => {});
+  // Autoplay dès le chargement, fallback sur 1er clic
+  function tryPlay() {
+    audio.play().catch(() => {
+      document.addEventListener('click', () => audio.play(), { once: true });
+    });
   }
-  document.addEventListener('click', startMusic, { once: true });
+  tryPlay();
+
+  function fadeTo(target, duration) {
+    if (fadeTimer) clearInterval(fadeTimer);
+    const start = audio.volume;
+    const steps = Math.ceil(duration / 30);
+    let i = 0;
+    fadeTimer = setInterval(() => {
+      i++;
+      audio.volume = Math.min(1, Math.max(0, start + (target - start) * (i / steps)));
+      if (i >= steps) clearInterval(fadeTimer);
+    }, 30);
+  }
 
   musicBtn.addEventListener('click', () => {
-    startMusic();
     audio.muted = !audio.muted;
     musicBtn.textContent = audio.muted ? '♪̶' : '♪';
     musicBtn.classList.toggle('muted', audio.muted);
   });
 
   musicVol.addEventListener('input', () => {
-    startMusic();
-    audio.volume = musicVol.value / 100;
+    targetVol = musicVol.value / 100;
+    audio.volume = targetVol;
     if (audio.muted) {
       audio.muted = false;
       musicBtn.textContent = '♪';
       musicBtn.classList.remove('muted');
     }
   });
+
+  // ── YouTube IFrame API ──
+  const ytPlayers = [];
+
+  window.onYouTubeIframeAPIReady = function () {
+    document.querySelectorAll('.yt-wrap').forEach(el => {
+      const player = new YT.Player(el.id, {
+        videoId: el.dataset.vid,
+        width:  '100%',
+        height: '100%',
+        playerVars: { rel: 0, modestbranding: 1 },
+        events: { onStateChange: onStateChange }
+      });
+      ytPlayers.push(player);
+    });
+  };
+
+  function anyPlaying() {
+    return ytPlayers.some(p => {
+      try { return p.getPlayerState() === YT.PlayerState.PLAYING; }
+      catch(e) { return false; }
+    });
+  }
+
+  function onStateChange() {
+    if (anyPlaying()) {
+      // Vidéo lancée → fade out musique
+      fadeTo(0, 600);
+    } else {
+      // Toutes en pause/stop → fade in musique
+      if (!audio.muted) fadeTo(targetVol, 800);
+    }
+  }
 
   // ── Lightning ──
   const lc  = document.getElementById('lightning');
@@ -328,7 +363,6 @@
       buildBolt(mx,my,bx,by,rough*.4,depth-2,segs);
     }
   }
-
   function drawSegs(segs,color,lw,blur) {
     ctx.strokeStyle=color; ctx.lineWidth=lw;
     ctx.shadowColor='#38bdf8'; ctx.shadowBlur=blur;
@@ -336,15 +370,13 @@
     segs.forEach(([x1,y1,x2,y2])=>{ ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); });
     ctx.stroke();
   }
-
   const bolts = [];
   function spawnBolt() {
     const x1 = 60 + Math.random()*(lc.width-120);
     const segs = [];
-    buildBolt(x1, 0, x1+(Math.random()-.5)*lc.width*.5, lc.height, 80, 7, segs);
+    buildBolt(x1,0, x1+(Math.random()-.5)*lc.width*.5, lc.height, 80, 7, segs);
     bolts.push({ segs, alpha: 1 });
   }
-
   (function renderLoop() {
     ctx.clearRect(0,0,lc.width,lc.height);
     for (let i=bolts.length-1; i>=0; i--) {
@@ -358,7 +390,6 @@
     ctx.globalAlpha = 1;
     requestAnimationFrame(renderLoop);
   })();
-
   setInterval(() => {
     spawnBolt();
     if (Math.random() < 0.4) setTimeout(spawnBolt, 150);
